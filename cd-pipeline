@@ -1,0 +1,33 @@
+pipeline {
+   agent any
+stages {
+    
+          stage('Pull Docker Image') {
+         steps {
+            sshagent(['7dea0664-46a4-4fe0-ab7e-592168dcbdcb']) {
+            sh label: '', script: '''ssh ec2-user@54.208.16.214 -o StrictHostKeyChecking=no << EOSS
+docker pull devopsera2020/nataraj-demo:latest
+EOSS
+'''
+         }
+         }
+      }
+      
+      stage('Deploy Container') {
+              steps {
+                  sshagent(['7dea0664-46a4-4fe0-ab7e-592168dcbdcb']) {
+            sh label: '', script: '''ssh ec2-user@54.208.16.214 -o StrictHostKeyChecking=no << EOSS
+docker stop demo
+docker rm demo 
+sleep 2
+docker run -d -p 80:80 --name demo devopsera2020/nataraj-demo:latest
+EOSS
+'''
+         }
+              }
+      }
+      
+}
+
+
+}

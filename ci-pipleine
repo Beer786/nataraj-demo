@@ -1,0 +1,23 @@
+pipeline {
+   agent any
+
+   stages {
+      stage('Git Checkout') {
+         steps {
+            git 'https://github.com/Beer786/nataraj-demo.git'
+         }
+      }
+     stage('Build Docker') {
+         steps {
+            sh 'docker build --no-cache -t devopsera2020/nataraj-demo:latest .'
+         }
+      }
+     stage('Build Push') {
+         steps {
+             
+            sh 'docker login -u devopsera2020 -p corona2020 && docker push devopsera2020/nataraj-demo:latest'
+            build 'Docker_Deploy_CD'
+         }
+      }
+   }
+}
